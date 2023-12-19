@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #box {
+            border: 2px solid black;
+            padding: 20px;
+            width: 200px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <button id="showKey" onclick="showKeyNameBox()">+</button>
+        <div id="keyNameBox" style="display: none;">
+            <label for="keyName">Nome:</label><br>
+            <input type="text" id="keyName" name="keyName"><br>
+            <button id="generateKeyButton" onclick="showKey()">Gerar Chave</button><br>
+            <textarea id="keyOutput" readonly></textarea><br>
+            <button id="copyButton" onclick="copyKey()">Copiar</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para gerar uma chave aleatória
+        function generateKey() {
+            var array = new Uint32Array(8);
+            window.crypto.getRandomValues(array);
+            var key = '';
+            for (var i = 0; i < array.length; i++) {
+                key += array[i].toString(16);
+            }
+            return key;
+        }
+
+        // Função para exibir a caixa de entrada do nome da chave
+        function showKeyNameBox() {
+            document.getElementById('keyNameBox').style.display = 'block';
+        }
+
+        // Função para exibir a chave
+        function showKey() {
+            var key = generateKey();
+            var keyName = document.getElementById('keyName').value;
+            if (keyName) {
+                document.getElementById('keyOutput').value = keyName + ': ' + key;
+            } else {
+                alert('Por favor, insira o nome da chave.');
+            }
+        }
+
+        // Função para copiar a chave para a área de transferência
+        function copyKey() {
+            var copyText = document.getElementById('keyOutput');
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Para dispositivos móveis
+            document.execCommand('copy');
+            alert('Chave copiada: ' + copyText.value);
+        }
+    </script>
+</body>
+</html>
