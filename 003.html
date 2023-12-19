@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <button id="generateKeyButton" onclick="showKey()">Gerar Chave</button><br>
+    <textarea id="keyOutput" readonly></textarea><br>
+    <button id="copyButton" onclick="copyKey()">Copiar</button><br>
+    <button id="saveButton" onclick="saveKey()">Salvar</button><br>
+    <button id="showHistoryButton" onclick="showHistory()">Mostrar Histórico</button>
+
+    <script>
+        // Função para gerar uma chave de API privada fictícia
+        function generateKey() {
+            var array = new Uint32Array(8);
+            window.crypto.getRandomValues(array);
+            return 'private_' + Array.from(array, num => num.toString(16)).join('') + '_suffix';
+        }
+
+        // Função para exibir a chave
+        function showKey() {
+            document.getElementById('keyOutput').value = generateKey();
+        }
+
+        // Função para copiar a chave para a área de transferência
+        function copyKey() {
+            var copyText = document.getElementById('keyOutput');
+            if (copyText.value.trim() !== '') {
+                copyText.select();
+                document.execCommand('copy');
+                alert('Chave copiada: ' + copyText.value);
+            } else {
+                alert('Nenhuma chave para copiar.');
+            }
+        }
+
+        // Função para salvar a chave
+        function saveKey() {
+            var password = prompt('Por favor, insira sua senha para autenticar.');
+            if (password === 'senha_secreta') { // Substitua 'senha_secreta' pela sua senha real
+                var key = document.getElementById('keyOutput').value;
+                if (key.trim() !== '') {
+                    var history = JSON.parse(localStorage.getItem('keyHistory')) || [];
+                    history.push(key);
+                    localStorage.setItem('keyHistory', JSON.stringify(history));
+                    alert('Chave salva com sucesso.');
+                } else {
+                    alert('Nenhuma chave para salvar.');
+                }
+            } else {
+                alert('Senha incorreta.');
+            }
+        }
+
+        // Função para mostrar o histórico de chaves
+        function showHistory() {
+            var password = prompt('Por favor, insira sua senha para autenticar.');
+            if (password === 'senha_secreta') { // Substitua 'senha_secreta' pela sua senha real
+                var history = JSON.parse(localStorage.getItem('keyHistory')) || [];
+                alert('Histórico de chaves: ' + history.join(', '));
+            } else {
+                alert('Senha incorreta.');
+            }
+        }
+    </script>
+</body>
+</html>
